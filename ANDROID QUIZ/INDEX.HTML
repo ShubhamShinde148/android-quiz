@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android App Development Quiz</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Default Dark Theme Variables */
+            --bg-color: #0f172a;
+            --bg-image: radial-gradient(circle at top, #1e293b, #0f172a);
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border-color: #334155;
+            
+            --correct-bg: rgba(34, 197, 94, 0.15);
+            --correct-border: #22c55e;
+            --correct-text: #4ade80;
+            --wrong-bg: rgba(239, 68, 68, 0.15);
+            --wrong-border: #ef4444;
+            --wrong-text: #f87171;
+
+            --title-gradient: linear-gradient(135deg, #60a5fa, #c084fc);
+            --banner-bg: linear-gradient(135deg, #1e293b, #0f172a);
+            
+            --option-bg: rgba(15, 23, 42, 0.4);
+            --option-hover-bg: rgba(30, 41, 59, 0.8);
+            --option-checked-bg: rgba(59, 130, 246, 0.08);
+            
+            --btn-bg: linear-gradient(135deg, var(--primary), #8b5cf6);
+            --btn-hover: linear-gradient(135deg, var(--primary-hover), #7c3aed);
+            --btn-text: white;
+            --btn-border: none;
+            
+            --stat-bg: rgba(15, 23, 42, 0.6);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* 🌞 Light Theme Variables (Enhanced Smooth BG) */
+        body.theme-light {
+            --bg-color: #f6f9fc;
+            --bg-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border-color: rgba(203, 213, 225, 0.6);
+            
+            --title-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+            --banner-bg: linear-gradient(135deg, #ffffff, #f8fafc);
+            
+            --option-bg: #f8fafc;
+            --option-hover-bg: #f1f5f9;
+            --option-checked-bg: rgba(59, 130, 246, 0.08);
+            
+            --btn-bg: linear-gradient(135deg, var(--primary), #8b5cf6);
+            --btn-hover: linear-gradient(135deg, var(--primary-hover), #7c3aed);
+            --btn-text: white;
+            --btn-border: none;
+            
+            --stat-bg: #ffffff;
+            --correct-text: #16a34a;
+            --wrong-text: #dc2626;
+            --correct-bg: rgba(34, 197, 94, 0.1);
+            --wrong-bg: rgba(239, 68, 68, 0.1);
+
+            --card-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.08);
+            --card-shadow-hover: 0 15px 45px -10px rgba(15, 23, 42, 0.15);
+        }
+
+        /* 👨‍💻 Hacker Theme Variables */
+        body.theme-hacker {
+            --bg-color: #000000;
+            --bg-image: radial-gradient(circle at center, #0a0a0a, #000000);
+            --card-bg: #050505;
+            --text-main: #00ff00;
+            --text-muted: #00aa00;
+            --primary: #00ff00;
+            --primary-hover: #33ff33;
+            --border-color: #004400;
+            
+            --title-gradient: linear-gradient(135deg, #00ff00, #00aa00);
+            --banner-bg: #050505;
+            
+            --option-bg: #000000;
+            --option-hover-bg: #0a0a0a;
+            --option-checked-bg: rgba(0, 255, 0, 0.08);
+            
+            --btn-bg: transparent;
+            --btn-hover: rgba(0, 255, 0, 0.15);
+            --btn-text: #00ff00;
+            --btn-border: 2px solid #00ff00;
+            
+            --stat-bg: #050505;
+            --correct-text: #00ff00;
+            --wrong-text: #ff0000;
+            --wrong-border: #ff0000;
+            --wrong-bg: rgba(255, 0, 0, 0.1);
+
+            --card-shadow: 0 4px 20px rgba(0, 255, 0, 0.05);
+            --card-shadow-hover: 0 8px 30px rgba(0, 255, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: var(--bg-image);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+            line-height: 1.6;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+        }
+
+        /* Theme Selector Customization */
+        #theme-selector {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #theme-selector:focus, #theme-selector:hover {
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        h1.main-title {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            background: var(--title-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        #result-banner {
+            display: none;
+            background: var(--banner-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .question-block {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .question-block:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 16px 20px 16px 50px;
+            background: var(--option-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .option-label:hover {
+            background: var(--option-hover-bg);
+            border-color: var(--primary);
+            color: var(--text-main);
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--primary);
+            background: var(--option-checked-bg);
+            color: var(--text-main);
+        }
+
+        .option-label input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .custom-radio {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 20px;
+            width: 20px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .option-label:has(input:checked) .custom-radio {
+            border-color: var(--primary);
+            background-color: transparent;
+        }
+
+        .option-label:has(input:checked) .custom-radio::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary);
+        }
+
+        /* Pagination & Action Buttons */
+        .submit-btn {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: var(--btn-border);
+            padding: 18px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            background: var(--btn-hover);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            color: var(--btn-text);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .custom-nav-btn {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 1.15rem;
+            transition: all 0.3s ease;
+        }
+
+        .custom-nav-btn:hover {
+            background-color: var(--option-hover-bg);
+            border-color: var(--primary);
+            color: var(--text-main);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .quiz-page {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dynamic Classes for Results */
+        .correct-answer {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: var(--text-main) !important;
+        }
+        
+        .correct-answer .custom-radio { border-color: var(--correct-border) !important; }
+        .correct-answer:has(input:checked) .custom-radio::after { background-color: var(--correct-border) !important; }
+
+        .correct-answer::after {
+            content: "✔";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--correct-border);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 26px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .wrong-answer {
+            background-color: var(--wrong-bg) !important;
+            border-color: var(--wrong-border) !important;
+            color: var(--text-main) !important;
+            opacity: 0.9;
+        }
+        
+        .wrong-answer .custom-radio { border-color: var(--wrong-border) !important; }
+        .wrong-answer:has(input:checked) .custom-radio::after { background-color: var(--wrong-border) !important; }
+
+        .wrong-answer::after {
+            content: "✖";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--wrong-border);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 26px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-label.disabled-label {
+            cursor: default;
+        }
+
+        /* Dashboard Stats */
+        .stat-card {
+            background: var(--stat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: transform 0.2s ease;
+            height: 100%;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+
+        .stat-card.correct { border-color: var(--correct-border); }
+        .stat-card.wrong { border-color: var(--wrong-border); }
+        .stat-card.score { border-color: var(--primary); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+
+        .stat-card.correct .stat-value { color: var(--correct-text); }
+        .stat-card.wrong .stat-value { color: var(--wrong-text); }
+        .stat-card.score .stat-value { background: var(--title-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer CSS */
+        .app-footer {
+            border-top: 1px dashed var(--border-color);
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .app-footer .brand {
+            background: var(--title-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-left: 5px;
+            letter-spacing: 1px;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4 px-3 px-md-4 quiz-container">
+    
+    <header class="text-center mb-5 position-relative">
+        <div class="d-flex justify-content-end mb-3">
+            <select id="theme-selector" class="form-select form-select-sm w-auto shadow-sm" onchange="document.body.className = this.value;">
+                <option value="">Dark Mode (Default)</option>
+                <option value="theme-light">Light Mode</option>
+                <option value="theme-hacker">Hacker Mode</option>
+            </select>
+        </div>
+        <h1 class="main-title mb-2">Android App Development</h1>
+        <p class="subtitle mb-0">Complete Quiz Evaluation</p>
+    </header>
+
+    <div id="result-banner" class="p-4 p-md-5 mb-5 mx-auto"></div>
+
+    <form id="quiz-form">
+        <div id="questions-container">
+            <!-- Question Pages will be injected here -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-5 gap-2" id="pagination-controls">
+            <button type="button" class="btn px-3 px-md-4 py-3 fw-bold custom-nav-btn" id="prev-btn" style="visibility: hidden;">Previous</button>
+            <span id="page-indicator" class="stat-label mb-0 text-center">Page 1 of 4</span>
+            <div>
+                <button type="button" class="submit-btn btn m-0 px-4 px-md-5" id="next-btn">Next</button>
+                <button type="submit" class="submit-btn btn m-0 px-4 px-md-5" id="submit-btn" style="display: none;">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <footer class="app-footer text-center pt-4 pb-2 mt-5">
+        Powered by <span class="brand">Hacker's Lobby</span>
+    </footer>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Complete Question Bank (Total: 80 Questions)
+    const questions = [
+        // --- Section 1 (Q1 to Q50) ---
+        { q: "You created an app, but when you click a button, nothing happens. You forgot to link the button with code. What is missing?", A: "Intent", B: "OnClickListener", C: "Fragment", D: "Service", ans: "B" },
+        { q: "An app crashes immediately after launch due to a missing permission for internet. Where should you declare it?", A: "activity_main.xml", B: "build.gradle", C: "AndroidManifest.xml", D: "strings.xml", ans: "C" },
+        { q: "You want to pass data from one Activity to another. What should you use?", A: "Fragment", B: "Intent", C: "Service", D: "View", ans: "B" },
+        { q: "Your app freezes when performing a long operation on the main thread. What is the issue?", A: "Memory leak", B: "ANR", C: "Syntax error", D: "API error", ans: "B" },
+        { q: "You want to display a list of 1000 items efficiently. What should you use?", A: "TextView", B: "LinearLayout", C: "RecyclerView", D: "ScrollView", ans: "C" },
+        { q: "Your app needs to run music in the background even after the app is closed. Which component should be used?", A: "Activity", B: "Fragment", C: "Service", D: "Intent", ans: "C" },
+        { q: "You want to show a short popup message when a user clicks a button. What should you use?", A: "AlertDialog", B: "Toast", C: "Notification", D: "Snackbar", ans: "B" },
+        { q: "You need to store structured data locally in your app. What is the best option?", A: "SharedPreferences", B: "SQLite", C: "Intent", D: "Service", ans: "B" },
+        { q: "You want your UI to adapt to different screen sizes using constraints. Which layout is best?", A: "LinearLayout", B: "FrameLayout", C: "ConstraintLayout", D: "TableLayout", ans: "C" },
+        { q: "You want to update UI automatically when data changes. Which component helps?", A: "View", B: "LiveData", C: "Intent", D: "Service", ans: "B" },
+        { q: "Your app should respond when the device battery is low. Which component should you use?", A: "Activity", B: "Broadcast Receiver", C: "Service", D: "Fragment", ans: "B" },
+        { q: "You want to connect your app to a REST API. Which library is commonly used?", A: "Glide", B: "Retrofit", C: "Room", D: "Picasso", ans: "B" },
+        { q: "You want to design UI without writing XML. Which modern toolkit should you use?", A: "Jetpack Compose", B: "RecyclerView", C: "ConstraintLayout", D: "Fragment", ans: "A" },
+        { q: "An app needs to save small key-value pairs like login status. What should be used?", A: "SQLite", B: "SharedPreferences", C: "Room", D: "Intent", ans: "B" },
+        { q: "Your app crashes due to null reference when accessing a view. What is the issue?", A: "Memory leak", B: "NullPointerException", C: "ANR", D: "API error", ans: "B" },
+        { q: "You want to reuse a UI component in multiple activities. What should you use?", A: "Service", B: "Fragment", C: "Intent", D: "BroadcastReceiver", ans: "B" },
+        { q: "Your app needs to load images from the internet efficiently. Which library can help?", A: "Retrofit", B: "Glide", C: "Room", D: "LiveData", ans: "B" },
+        { q: "You want navigation between screens with back stack support. What should you use?", A: "Intent only", B: "Navigation Component", C: "FragmentManager", D: "Service", ans: "B" },
+        { q: "You need to perform background work without blocking UI. What should you use?", A: "Activity", B: "Main thread", C: "AsyncTask / Coroutine", D: "Layout", ans: "C" },
+        { q: "You want to debug your app and see logs. Which tool will you use in Android Studio?", A: "Emulator", B: "Logcat", C: "Gradle", D: "ADB", ans: "B" },
+        { q: "Your app must access the camera. What is required first?", A: "Layout file", B: "Permission in Manifest", C: "Intent", D: "Service", ans: "B" },
+        { q: "You want to display a dialog box asking user confirmation. What should you use?", A: "Toast", B: "AlertDialog", C: "Intent", D: "Service", ans: "B" },
+        { q: "Your app UI overlaps elements accidentally. Which layout may cause this?", A: "LinearLayout", B: "FrameLayout", C: "ConstraintLayout", D: "GridLayout", ans: "B" },
+        { q: "You want to bind UI components safely without findViewById(). What should you use?", A: "ViewBinding", B: "Intent", C: "Service", D: "Fragment", ans: "A" },
+        { q: "You want your app to work offline and sync later. Which approach is best?", A: "Only API calls", B: "Local DB + Sync", C: "Only UI", D: "Intent", ans: "B" },
+        { q: "Your app crashes due to heavy memory usage. What is the issue?", A: "ANR", B: "Memory leak", C: "Syntax error", D: "Intent error", ans: "B" },
+        { q: "You want to schedule a task even if app is closed. What should you use?", A: "Activity", B: "Service", C: "WorkManager", D: "Fragment", ans: "C" },
+        { q: "User rotates the screen and data is lost. What should be used?", A: "Intent", B: "ViewModel", C: "Service", D: "Layout", ans: "B" },
+        { q: "You want to show temporary message with action button. What should you use?", A: "Toast", B: "Snackbar", C: "Dialog", D: "Notification", ans: "B" },
+        { q: "You want to test app on different devices without real phones. What should you use?", A: "SDK", B: "Emulator", C: "APK", D: "Gradle", ans: "B" },
+        { q: "You updated a layout XML file, but changes are not reflecting in the app. What should you do first?", A: "Restart device", B: "Clean & Rebuild project", C: "Delete code", D: "Change Activity", ans: "B" },
+        { q: "Your app needs to open a web page when a button is clicked. What should you use?", A: "Service", B: "Intent with ACTION_VIEW", C: "Fragment", D: "BroadcastReceiver", ans: "B" },
+        { q: "You want to store images inside the app package. Which folder should you use?", A: "assets", B: "res/drawable", C: "libs", D: "src", ans: "B" },
+        { q: "Your app crashes due to missing UI element ID. What is likely the problem?", A: "Wrong API level", B: "Incorrect ID reference", C: "Gradle issue", D: "Emulator issue", ans: "B" },
+        { q: "You want to make an API call only when internet is available. What should you check?", A: "Battery status", B: "Network connectivity", C: "Screen size", D: "Storage", ans: "B" },
+        { q: "Your app needs to share text to other apps like WhatsApp. What should you use?", A: "Fragment", B: "Explicit Intent", C: "Implicit Intent", D: "Service", ans: "C" },
+        { q: "You want to keep user logged in even after app restart. What should you use?", A: "SQLite", B: "SharedPreferences", C: "Intent", D: "Service", ans: "B" },
+        { q: "Your app UI is slow due to deeply nested layouts. What is the solution?", A: "Add more views", B: "Use ConstraintLayout", C: "Use FrameLayout", D: "Use ScrollView", ans: "B" },
+        { q: "You want to update UI from background thread. What should you use?", A: "Direct update", B: "Handler / runOnUiThread", C: "Service", D: "Intent", ans: "B" },
+        { q: "Your app must download a file in background and notify user. What should you use?", A: "Activity", B: "Service + Notification", C: "Fragment", D: "Layout", ans: "B" },
+        { q: "You want to reduce APK size. What should you do?", A: "Add more libraries", B: "Enable ProGuard / R8", C: "Increase images", D: "Use more layouts", ans: "B" },
+        { q: "Your app crashes when rotating screen due to recreation. What is happening?", A: "Activity restart", B: "API crash", C: "Memory leak", D: "Intent failure", ans: "A" },
+        { q: "You want to handle button click in XML directly. Which attribute is used?", A: "android:id", B: "android:onClick", C: "android:text", D: "android:layout", ans: "B" },
+        { q: "Your app needs to upload files to server. Which library is suitable?", A: "Glide", B: "Retrofit", C: "Room", D: "Live Data", ans: "B" },
+        { q: "You want to support multiple languages in your app. What should you use?", A: "Different Activities", B: "strings.xml localization", C: "Layout file", D: "Manifest", ans: "B" },
+        { q: "Your app needs to access user location. What is required?", A: "UI change", B: "Location permission", C: "Fragment", D: "Intent", ans: "B" },
+        { q: "You want to observe lifecycle changes of activity. What should you use?", A: "Service", B: "Lifecycle Observer", C: "Intent", D: "Layout", ans: "B" },
+        { q: "Your app is not installing due to version conflict. What should you update?", A: "Layout", B: "versionCode / versionName", C: "Activity", D: "Fragment", ans: "B" },
+        { q: "You want to animate a button click. What should you use?", A: "Animation API", B: "Intent", C: "Service", D: "Database", ans: "A" },
+        { q: "You want to monitor app performance issues. Which tool inside Android Studio helps?", A: "Logcat", B: "Profiler", C: "Emulator", D: "SDK Manager", ans: "B" },
+        
+        // --- Section 2 (Q1 to Q30 converted to continue array) ---
+        { q: "What is an application (app)?", A: "A hardware device", B: "A software program designed to perform tasks", C: "A programming language", D: "A database", ans: "B" },
+        { q: "Which language is commonly used for Android app development?", A: "Python", B: "Java", C: "C++", D: "PHP", ans: "B" },
+        { q: "What is the main function of an IDE?", A: "To store data", B: "To design hardware", C: "To write and test code", D: "To manage networks", ans: "C" },
+        { q: "Which IDE is commonly used for Android development?", A: "Eclipse", B: "Android Studio", C: "NetBeans", D: "Visual Studio Code", ans: "B" },
+        { q: "What does APK stand for?", A: "Android Program Kit", B: "Android Package Kit", C: "Application Program Key", D: "Android Phone Kit", ans: "B" },
+        { q: "What is UI in app development?", A: "User Interface", B: "Universal Internet", C: "User Input", D: "Utility Interface", ans: "A" },
+        { q: "What is UX?", A: "User XML", B: "User Experience", C: "User Execution", D: "Universal Experience", ans: "B" },
+        { q: "Which component is used to design layouts in Android?", A: "Java", B: "XML", C: "HTML", D: "SQL", ans: "B" },
+        { q: "What is an Activity in Android?", A: "A database", B: "A single screen in an app", C: "A file manager", D: "A network tool", ans: "B" },
+        { q: "What is a Fragment?", A: "A type of database", B: "A UI component representing part of a screen", C: "A programming language", D: "A hardware unit", ans: "B" },
+        { q: "Which file contains app configuration details?", A: "MainActivity.java", B: "AndroidManifest.xml", C: "layout.xml", D: "strings.xml", ans: "B" },
+        { q: "What is a View in Android?", A: "A database", B: "A UI element", C: "A server", D: "A file", ans: "B" },
+        { q: "Which layout arranges elements in a single column or row?", A: "RelativeLayout", B: "LinearLayout", C: "FrameLayout", D: "GridLayout", ans: "B" },
+        { q: "What is the purpose of a Button?", A: "To display images", B: "To take user input", C: "To trigger actions", D: "To store data", ans: "C" },
+        { q: "What is an Emulator?", A: "A real device", B: "A virtual device for testing apps", C: "A programming tool", D: "A database", ans: "B" },
+        { q: "What is debugging?", A: "Writing code", B: "Finding and fixing errors", C: "Compiling code", D: "Designing UI", ans: "B" },
+        { q: "What is SDK?", A: "Software Development Kit", B: "System Development Key", C: "Software Design Kit", D: "System Data Kit", ans: "A" },
+        { q: "What is API?", A: "Application Programming Interface", B: "App Process Integration", C: "Android Program Interface", D: "Application Process Input", ans: "A" },
+        { q: "Which component handles background tasks in Android?", A: "Activity", B: "Service", C: "Fragment", D: "View", ans: "B" },
+        { q: "What is a Toast message?", A: "A type of layout", B: "A short message displayed on screen", C: "A database entry", D: "A button type", ans: "B" },
+        { q: "What is Gradle used for?", A: "UI design", B: "Build automation", C: "Database management", D: "Networking", ans: "B" },
+        { q: "Which file stores text values in Android?", A: "colors.xml", B: "strings.xml", C: "styles.xml", D: "manifest.xml", ans: "B" },
+        { q: "What is intent in Android?", A: "A database", B: "A messaging object for communication between components", C: "A UI layout", D: "A file format", ans: "B" },
+        { q: "What is the purpose of RecyclerView?", A: "Store data", B: "Display lists efficiently", C: "Connect database", D: "Manage files", ans: "B" },
+        { q: "What is a permission in Android?", A: "UI element", B: "Access control for app features", C: "Layout file", D: "Programming language", ans: "B" },
+        { q: "What is version control?", A: "Managing UI", B: "Tracking code changes", C: "Designing apps", D: "Debugging code", ans: "B" },
+        { q: "Which tool is used for version control?", A: "Git", B: "Java", C: "XML", D: "SQLite", ans: "A" },
+        { q: "What is SQLite?", A: "Programming language", B: "Lightweight database", C: "UI tool", D: "API", ans: "B" },
+        { q: "What is responsive design?", A: "Fast coding", B: "Adapting UI to different screen sizes", C: "Debugging code", D: "Storing data", ans: "B" },
+        { q: "What is publishing an app?", A: "Writing code", B: "Testing app", C: "Uploading app to app store", D: "Debugging", ans: "C" }
+    ];
+
+    const container = document.getElementById('questions-container');
+    const form = document.getElementById('quiz-form');
+    const resultBanner = document.getElementById('result-banner');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Pagination state
+    const questionsPerPage = 20;
+    const totalPages = Math.ceil(questions.length / questionsPerPage);
+    let currentPage = 1;
+
+    // Create page containers
+    for (let i = 1; i <= totalPages; i++) {
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'quiz-page';
+        pageDiv.id = `page-${i}`;
+        if (i !== 1) pageDiv.style.display = 'none';
+        container.appendChild(pageDiv);
+    }
+
+    // 1. Render all questions dynamically into respective pages
+    questions.forEach((item, index) => {
+        const pageNum = Math.floor(index / questionsPerPage) + 1;
+        const targetPage = document.getElementById(`page-${pageNum}`);
+        
+        const qBlock = document.createElement('div');
+        qBlock.className = 'question-block p-4 p-md-5 mb-4';
+        
+        qBlock.innerHTML = `
+            <div class="question-text mb-4">${index + 1}. ${item.q}</div>
+            <div class="options-container">
+                <label class="option-label" id="label-${index}-A">
+                    <input type="radio" name="q${index}" value="A"> 
+                    <span class="custom-radio"></span>
+                    <span>A. ${item.A}</span>
+                </label>
+                <label class="option-label" id="label-${index}-B">
+                    <input type="radio" name="q${index}" value="B"> 
+                    <span class="custom-radio"></span>
+                    <span>B. ${item.B}</span>
+                </label>
+                <label class="option-label" id="label-${index}-C">
+                    <input type="radio" name="q${index}" value="C"> 
+                    <span class="custom-radio"></span>
+                    <span>C. ${item.C}</span>
+                </label>
+                <label class="option-label" id="label-${index}-D">
+                    <input type="radio" name="q${index}" value="D"> 
+                    <span class="custom-radio"></span>
+                    <span>D. ${item.D}</span>
+                </label>
+            </div>
+        `;
+        targetPage.appendChild(qBlock);
+    });
+
+    // Pagination Logic
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pageIndicator = document.getElementById('page-indicator');
+    const paginationControls = document.getElementById('pagination-controls');
+
+    function updatePagination() {
+        // Toggle page visibility
+        for (let i = 1; i <= totalPages; i++) {
+            document.getElementById(`page-${i}`).style.display = (i === currentPage) ? 'block' : 'none';
+        }
+        
+        // Update indicator
+        pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+
+        // Toggle button states
+        prevBtn.style.visibility = (currentPage === 1) ? 'hidden' : 'visible';
+
+        if (currentPage === totalPages) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'inline-block';
+        } else {
+            nextBtn.style.display = 'inline-block';
+            submitBtn.style.display = 'none';
+        }
+
+        // Scroll back to top smoothly
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePagination();
+        }
+    });
+
+    // 2. Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let score = 0;
+
+        questions.forEach((item, index) => {
+            const selectedRadio = document.querySelector(`input[name="q${index}"]:checked`);
+            const correctLabel = document.getElementById(`label-${index}-${item.ans}`);
+            
+            // Disable all inputs so user cannot change answers after submit
+            const allRadios = document.querySelectorAll(`input[name="q${index}"]`);
+            allRadios.forEach(radio => {
+                radio.disabled = true;
+                radio.parentElement.classList.add('disabled-label');
+            });
+
+            if (selectedRadio) {
+                const selectedValue = selectedRadio.value;
+                const selectedLabel = document.getElementById(`label-${index}-${selectedValue}`);
+
+                if (selectedValue === item.ans) {
+                    // Correct answer
+                    score++;
+                    selectedLabel.classList.add('correct-answer');
+                } else {
+                    // Wrong answer - highlight wrong choice red and correct choice green
+                    selectedLabel.classList.add('wrong-answer');
+                    correctLabel.classList.add('correct-answer');
+                }
+            } else {
+                // If not answered, highlight the correct answer
+                correctLabel.classList.add('correct-answer');
+            }
+        });
+
+        // Display all pages to review answers
+        for (let i = 1; i <= totalPages; i++) {
+            document.getElementById(`page-${i}`).style.display = 'block';
+        }
+        
+        // Hide pagination controls entirely once submitted
+        paginationControls.style.display = 'none';
+
+        // 3. Display Results using Bootstrap Grid System
+        const total = questions.length;
+        const correctAnswers = score;
+        const wrongAnswers = total - score;
+        const percentage = ((score / total) * 100).toFixed(1);
+        
+        let feedbackMessage = "";
+        if(score === total) feedbackMessage = "Perfect! You're an Android Master!";
+        else if(percentage >= 80) feedbackMessage = "Excellent Job! Great knowledge.";
+        else if(percentage >= 50) feedbackMessage = "Good try! Review the highlighted answers to improve.";
+        else feedbackMessage = "Keep practicing! Review the correct answers below.";
+
+        resultBanner.innerHTML = `
+            <h2>Results</h2>
+            <p class="mb-4"><strong>${percentage}%</strong> - ${feedbackMessage}</p>
+            <div class="row g-3 justify-content-center">
+                <div class="col-12 col-sm-4">
+                    <div class="stat-card correct">
+                        <div class="stat-value">${correctAnswers}</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="stat-card wrong">
+                        <div class="stat-value">${wrongAnswers}</div>
+                        <div class="stat-label">Wrong</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="stat-card score">
+                        <div class="stat-value">${score}/${total}</div>
+                        <div class="stat-label">Total Score</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        resultBanner.style.display = 'block';
+
+        // Scroll back to top to view score
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>
