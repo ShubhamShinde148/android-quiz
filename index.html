@@ -44,11 +44,11 @@
             --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
-        /* 🌞 Light Theme Variables (Enhanced Smooth BG) */
+        /* 🌞 Light Theme Variables (Normal Solid BG) */
         body.theme-light {
-            --bg-color: #f6f9fc;
-            --bg-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --bg-color: #f0f4f9; /* Standard normal light background */
+            --bg-image: none; /* Removed the gradient */
+            --card-bg: #ffffff; /* Solid white cards */
             --text-main: #1e293b;
             --text-muted: #64748b;
             --primary: #3b82f6;
@@ -56,10 +56,10 @@
             --border-color: rgba(203, 213, 225, 0.6);
             
             --title-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
-            --banner-bg: linear-gradient(135deg, #ffffff, #f8fafc);
+            --banner-bg: #ffffff;
             
-            --option-bg: #f8fafc;
-            --option-hover-bg: #f1f5f9;
+            --option-bg: #ffffff;
+            --option-hover-bg: #f8fafc;
             --option-checked-bg: rgba(59, 130, 246, 0.08);
             
             --btn-bg: linear-gradient(135deg, var(--primary), #8b5cf6);
@@ -73,8 +73,8 @@
             --correct-bg: rgba(34, 197, 94, 0.1);
             --wrong-bg: rgba(239, 68, 68, 0.1);
 
-            --card-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.08);
-            --card-shadow-hover: 0 15px 45px -10px rgba(15, 23, 42, 0.15);
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
         /* 👨‍💻 Hacker Theme Variables */
@@ -145,8 +145,6 @@
             font-size: clamp(2rem, 5vw, 2.8rem);
             background: var(--title-gradient);
             -webkit-background-clip: text;
-            background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800;
         }
@@ -392,7 +390,7 @@
 
         .stat-card.correct .stat-value { color: var(--correct-text); }
         .stat-card.wrong .stat-value { color: var(--wrong-text); }
-        .stat-card.score .stat-value { background: var(--title-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card.score .stat-value { background: var(--title-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .stat-label {
             font-size: 1rem;
@@ -424,12 +422,6 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .footer marquee {
-  text-shadow: 
-    0 0 5px #00ffcc,
-    0 0 10px #00ffcc,
-    0 0 20px #00ffcc;
-}
     </style>
 </head>
 <body>
@@ -445,7 +437,7 @@
             </select>
         </div>
         <h1 class="main-title mb-2">Android App Development</h1>
-        <p class="subtitle mb-0">CIA-II PRACTICES </p>
+        <p class="subtitle mb-0">Complete Quiz Evaluation</p>
     </header>
 
     <div id="result-banner" class="p-4 p-md-5 mb-5 mx-auto"></div>
@@ -468,10 +460,6 @@
 
     <footer class="app-footer text-center pt-4 pb-2 mt-5">
         Powered by <span class="brand">Hacker's Lobby</span>
-         <marquee scrollamount="6">
-         ⚡ © 2026 HACKER'S LOBBY⚡<br> 
-             SYSTEM SECURED⚡AUTHOR: S❤️‍🩹S  ⚡
-  </marquee>
     </footer>
 </div>
 
@@ -566,6 +554,35 @@
         { q: "What is publishing an app?", A: "Writing code", B: "Testing app", C: "Uploading app to app store", D: "Debugging", ans: "C" }
     ];
 
+    // --- NEW SHUFFLE LOGIC ---
+    // Standard Fisher-Yates array shuffle function
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Map existing structure, extract correct text, and shuffle options
+    let shuffledQuestions = questions.map(q => {
+        let correctText = q[q.ans]; // Identify the exact string of the correct answer
+        let options = [q.A, q.B, q.C, q.D];
+        
+        shuffleArray(options); // Randomize the 4 options
+        
+        return {
+            q: q.q,
+            options: options,
+            correctIndex: options.indexOf(correctText), // Store the new index of the correct answer
+            correctText: correctText
+        };
+    });
+
+    // Shuffle the entire array of questions so they appear in a random order every reload
+    shuffleArray(shuffledQuestions);
+    // -------------------------
+
     const container = document.getElementById('questions-container');
     const form = document.getElementById('quiz-form');
     const resultBanner = document.getElementById('result-banner');
@@ -573,7 +590,7 @@
     
     // Pagination state
     const questionsPerPage = 20;
-    const totalPages = Math.ceil(questions.length / questionsPerPage);
+    const totalPages = Math.ceil(shuffledQuestions.length / questionsPerPage);
     let currentPage = 1;
 
     // Create page containers
@@ -585,37 +602,32 @@
         container.appendChild(pageDiv);
     }
 
-    // 1. Render all questions dynamically into respective pages
-    questions.forEach((item, index) => {
+    // 1. Render all questions dynamically into respective pages using shuffled data
+    shuffledQuestions.forEach((item, index) => {
         const pageNum = Math.floor(index / questionsPerPage) + 1;
         const targetPage = document.getElementById(`page-${pageNum}`);
         
         const qBlock = document.createElement('div');
         qBlock.className = 'question-block p-4 p-md-5 mb-4';
         
+        // Dynamically build randomized options keeping A, B, C, D letters visually
+        let optionsHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+        
+        item.options.forEach((optText, optIndex) => {
+            optionsHTML += `
+                <label class="option-label" id="label-${index}-${optIndex}">
+                    <input type="radio" name="q${index}" value="${optIndex}"> 
+                    <span class="custom-radio"></span>
+                    <span>${letters[optIndex]}. ${optText}</span>
+                </label>
+            `;
+        });
+        
         qBlock.innerHTML = `
             <div class="question-text mb-4">${index + 1}. ${item.q}</div>
             <div class="options-container">
-                <label class="option-label" id="label-${index}-A">
-                    <input type="radio" name="q${index}" value="A"> 
-                    <span class="custom-radio"></span>
-                    <span>A. ${item.A}</span>
-                </label>
-                <label class="option-label" id="label-${index}-B">
-                    <input type="radio" name="q${index}" value="B"> 
-                    <span class="custom-radio"></span>
-                    <span>B. ${item.B}</span>
-                </label>
-                <label class="option-label" id="label-${index}-C">
-                    <input type="radio" name="q${index}" value="C"> 
-                    <span class="custom-radio"></span>
-                    <span>C. ${item.C}</span>
-                </label>
-                <label class="option-label" id="label-${index}-D">
-                    <input type="radio" name="q${index}" value="D"> 
-                    <span class="custom-radio"></span>
-                    <span>D. ${item.D}</span>
-                </label>
+                ${optionsHTML}
             </div>
         `;
         targetPage.appendChild(qBlock);
@@ -671,9 +683,10 @@
         
         let score = 0;
 
-        questions.forEach((item, index) => {
+        // Evaluate using shuffled array data
+        shuffledQuestions.forEach((item, index) => {
             const selectedRadio = document.querySelector(`input[name="q${index}"]:checked`);
-            const correctLabel = document.getElementById(`label-${index}-${item.ans}`);
+            const correctLabel = document.getElementById(`label-${index}-${item.correctIndex}`); // Locate by new correct index
             
             // Disable all inputs so user cannot change answers after submit
             const allRadios = document.querySelectorAll(`input[name="q${index}"]`);
@@ -683,10 +696,10 @@
             });
 
             if (selectedRadio) {
-                const selectedValue = selectedRadio.value;
+                const selectedValue = parseInt(selectedRadio.value); // Convert string value to index number
                 const selectedLabel = document.getElementById(`label-${index}-${selectedValue}`);
 
-                if (selectedValue === item.ans) {
+                if (selectedValue === item.correctIndex) {
                     // Correct answer
                     score++;
                     selectedLabel.classList.add('correct-answer');
@@ -710,7 +723,7 @@
         paginationControls.style.display = 'none';
 
         // 3. Display Results using Bootstrap Grid System
-        const total = questions.length;
+        const total = shuffledQuestions.length;
         const correctAnswers = score;
         const wrongAnswers = total - score;
         const percentage = ((score / total) * 100).toFixed(1);
