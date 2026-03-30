@@ -418,6 +418,90 @@
             letter-spacing: 1px;
         }
 
+        /* --- New Update Popup CSS --- */
+        .update-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .update-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .update-modal {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            padding: 35px;
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .update-overlay.show .update-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .update-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--title-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .update-list {
+            text-align: left;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            padding-left: 0;
+            list-style: none;
+            font-size: 1.05rem;
+        }
+
+        .update-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .close-modal-btn {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: var(--btn-border);
+            padding: 14px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal-btn:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -425,6 +509,19 @@
     </style>
 </head>
 <body>
+
+<!-- Update Popup Modal -->
+<div class="update-overlay" id="update-popup">
+    <div class="update-modal">
+        <h2 class="update-title">🚀 What's New!</h2>
+        <ul class="update-list">
+            <li><span>🔀</span> <strong>Smart Shuffle:</strong> Questions and options randomize perfectly on every reload!</li>
+            <li><span>🎨</span> <strong>Themes:</strong> Switch between Dark, Light, and Hacker modes.</li>
+            <li><span>📱</span> <strong>Responsive:</strong> Enhanced UI layout for mobile and desktop.</li>
+        </ul>
+        <button class="close-modal-btn" onclick="closeUpdatePopup()">Got it, let's play!</button>
+    </div>
+</div>
 
 <div class="container py-4 px-3 px-md-4 quiz-container">
     
@@ -467,6 +564,22 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    // --- Popup Logic ---
+    // Show popup with a slight delay if it hasn't been seen in this session
+    window.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('updateSeen')) {
+            setTimeout(() => {
+                document.getElementById('update-popup').classList.add('show');
+            }, 500);
+        }
+    });
+
+    function closeUpdatePopup() {
+        document.getElementById('update-popup').classList.remove('show');
+        sessionStorage.setItem('updateSeen', 'true'); // Prevent it from showing on next reload
+    }
+    // -------------------
+
     // Complete Question Bank (Total: 80 Questions)
     const questions = [
         // --- Section 1 (Q1 to Q50) ---
